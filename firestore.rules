@@ -1,0 +1,120 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - uid: string (required) - The unique identifier of the user.
+    //   - email: string (required) - The user's email address.
+    //   - createdAt: timestamp (required) - When the user account was created.
+    //
+    // Collection: users/{userId}/pages
+    // Document ID: {pageId}
+    // Fields:
+    //   - userId: string (required) - The ID of the user who owns this page.
+    //   - pageNumber: number (required) - The sequential number of the page.
+    //   - theme: string (required) - The color theme of the page.
+    //   - createdAt: timestamp (required) - When the page was created.
+    //
+    // Collection: users/{userId}/pages/{pageId}/todos
+    // Document ID: {todoId}
+    // Fields:
+    //   - userId: string (required) - The ID of the user who owns this todo.
+    //   - pageId: string (required) - The ID of the page this todo belongs to.
+    //   - text: string (required) - The text content of the todo.
+    //   - completed: boolean (required) - Whether the todo is completed.
+    //   - createdAt: timestamp (required) - When the todo was created.
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+    
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    
+    function isValidUser(data, userId) {
+      return hasOnlyAllowedFields(['uid', 'email', 'createdAt']) &&
+             data.uid == userId &&
+             isValidEmail(data.email) &&
+             data.createdAt is timestamp;
+    }
+    
+    function isValidPage(data, userId) {
+      return hasOnlyAllowedFields(['userId', 'pageNumber', 'theme', 'createdAt']) &&
+             data.userId == userId &&
+             data.pageNumber is number && data.pageNumber >= 0 &&
+             data.theme is string && data.theme.size() > 0 && data.theme.size() < 50 &&
+             data.createdAt is timestamp;
+    }
+    
+    function isValidTodo(data, userId, pageId) {
+      return hasOnlyAllowedFields(['userId', 'pageId', 'text', 'completed', 'createdAt']) &&
+             data.userId == userId &&
+             data.pageId == pageId &&
+             data.text is string && data.text.size() > 0 && data.text.size() < 1000 &&
+             data.completed is bool &&
+             data.createdAt is timestamp;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data, userId);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data, userId) && 
+                    request.resource.data.uid == resource.data.uid &&
+                    request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isOwner(userId);
+
+      match /pages/{pageId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidPage(request.resource.data, userId);
+        allow update: if isOwner(userId) && isValidPage(request.resource.data, userId) &&
+                      request.resource.data.userId == resource.data.userId &&
+                      request.resource.data.createdAt == resource.data.createdAt;
+        allow delete: if isOwner(userId);
+
+        match /todos/{todoId} {
+          allow read: if isOwner(userId);
+          allow create: if isOwner(userId) && isValidTodo(request.resource.data, userId, pageId);
+          allow update: if isOwner(userId) && isValidTodo(request.resource.data, userId, pageId) &&
+                        request.resource.data.userId == resource.data.userId &&
+                        request.resource.data.pageId == resource.data.pageId &&
+                        request.resource.data.createdAt == resource.data.createdAt;
+          allow delete: if isOwner(userId);
+        }
+      }
+    }
+  }
+}

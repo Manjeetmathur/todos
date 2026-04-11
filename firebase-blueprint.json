@@ -1,0 +1,100 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the comic journal app.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique identifier of the user."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the user account was created."
+        }
+      },
+      "required": ["uid", "email", "createdAt"]
+    },
+    "Page": {
+      "title": "Page",
+      "description": "A single page in the comic journal.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns this page."
+        },
+        "pageNumber": {
+          "type": "number",
+          "description": "The sequential number of the page."
+        },
+        "theme": {
+          "type": "string",
+          "description": "The color theme of the page."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the page was created."
+        }
+      },
+      "required": ["userId", "pageNumber", "theme", "createdAt"]
+    },
+    "Todo": {
+      "title": "Todo",
+      "description": "A todo item on a journal page.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns this todo."
+        },
+        "pageId": {
+          "type": "string",
+          "description": "The ID of the page this todo belongs to."
+        },
+        "text": {
+          "type": "string",
+          "description": "The text content of the todo."
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Whether the todo is completed."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the todo was created."
+        }
+      },
+      "required": ["userId", "pageId", "text", "completed", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/User"
+      },
+      "description": "Stores user profiles."
+    },
+    "/users/{userId}/pages/{pageId}": {
+      "schema": {
+        "$ref": "#/entities/Page"
+      },
+      "description": "Stores journal pages for a user."
+    },
+    "/users/{userId}/pages/{pageId}/todos/{todoId}": {
+      "schema": {
+        "$ref": "#/entities/Todo"
+      },
+      "description": "Stores todo items for a specific page."
+    }
+  }
+}

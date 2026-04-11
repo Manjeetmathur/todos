@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Patrick+Hand&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-handwriting: "Patrick Hand", cursive;
+  --font-marker: "Caveat", cursive;
+}
+
+@layer utilities {
+  .notebook-lines {
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      rgba(0, 0, 0, 0.1) 31px,
+      rgba(0, 0, 0, 0.1) 32px
+    );
+    background-attachment: local;
+    line-height: 32px;
+  }
+}
+
+body {
+  font-family: "Patrick Hand", cursive;
+  background-color: #fce4ec; /* Cute pink background */
+  overflow: hidden; /* Prevent scrolling outside the notebook */
+}
+
+/* Custom Scrollbar for lists */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(244, 114, 182, 0.3); /* pink-400 with opacity */
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(244, 114, 182, 0.6);
+}
