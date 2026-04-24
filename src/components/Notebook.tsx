@@ -186,9 +186,9 @@ export default function Notebook({ user }: NotebookProps) {
   }
 
   return (
-    <div className="relative w-full max-w-4xl h-[70vh] min-h-[450px] sm:h-auto sm:aspect-[4/3] flex flex-col mt-2 sm:mt-0">
+    <div className="relative w-full max-w-4xl flex-1 flex flex-col min-h-0 sm:aspect-[4/3] sm:flex-none sm:h-auto">
       {/* Theme Selector */}
-      <div className="absolute -top-9 sm:-top-12 right-1 sm:right-0 flex justify-end gap-1.5 sm:gap-2 z-20">
+      {/* <div className="absolute -top-9 sm:-top-12 right-1 sm:right-0 flex justify-end gap-1.5 sm:gap-2 z-20">
         {THEMES.map(theme => (
           <button
             key={theme.bg}
@@ -197,9 +197,9 @@ export default function Notebook({ user }: NotebookProps) {
             title="Change page color"
           />
         ))}
-      </div>
+      </div> */}
 
-      <div className="relative flex-1 w-full min-h-0">
+      <div className="relative flex-1 w-full">
         {/* Notebook Cover/Binding effect */}
         <div className="absolute inset-0 bg-gray-800 rounded-r-3xl rounded-l-md shadow-2xl -z-10 translate-x-1 translate-y-1"></div>
         
@@ -235,7 +235,7 @@ export default function Notebook({ user }: NotebookProps) {
       </div>
       
       {/* Page Indicator */}
-      <div className="absolute -bottom-8 sm:-bottom-10 left-1/2 -translate-x-1/2 font-handwriting text-lg sm:text-xl text-gray-500">
+      <div className="absolute bottom-1 sm:-bottom-10 left-1/2 -translate-x-1/2 font-handwriting text-base sm:text-xl text-gray-600 z-10 px-3 py-0.5 rounded-full">
         Page {currentPageIndex + 1} of {pages.length}
       </div>
     </div>

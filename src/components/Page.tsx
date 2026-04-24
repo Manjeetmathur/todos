@@ -4,7 +4,7 @@ import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, deleteDoc, d
 import { db, handleFirestoreError, OperationType } from '../firebase';
 import { JournalPage } from './Notebook';
 import { CheckCircle2, Circle, Trash2, ArrowRight, Pencil, Check } from 'lucide-react';
-
+import React from 'react';
 interface PageProps {
   user: User;
   page: JournalPage;
@@ -120,7 +120,6 @@ export default function Page({ user, page, onNextPage }: PageProps) {
             onChange={(e) => setNewTodo(e.target.value)}
             placeholder="Write a new task or thought..."
             className="flex-1 min-w-0 bg-transparent border-none outline-none text-lg sm:text-xl font-handwriting text-gray-800 placeholder:text-gray-400"
-            autoFocus
           />
           <button
             type="submit"
@@ -225,14 +224,14 @@ export default function Page({ user, page, onNextPage }: PageProps) {
           </div>
 
           {/* Next Page Button inside the completed box area at the bottom */}
-          <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4">
+          {/* <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4">
              <button
                 onClick={onNextPage}
                 className="flex items-center gap-1 sm:gap-2 px-3 py-1 sm:px-4 sm:py-1.5 bg-white rounded-full shadow-md text-pink-500 font-handwriting text-base sm:text-lg hover:bg-pink-50 transition-colors border border-pink-100"
               >
                 Next Page <ArrowRight size={16} className="sm:w-4 sm:h-4" />
               </button>
-          </div>
+          </div> */}
         </div>
 
       </div>

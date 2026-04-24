@@ -43,8 +43,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-pink-50 flex flex-col items-center justify-center p-3 sm:p-4">
-      <div className="w-full max-w-4xl flex justify-between items-center mb-10 sm:mb-6 px-1 sm:px-0">
+    <div className="h-[100dvh] bg-pink-50 flex flex-col items-center p-2">
+      <div className="w-full max-w-4xl flex-none flex justify-between items-center py-3 px-4">
         <h1 className="text-2xl sm:text-4xl font-marker text-pink-500">My Comic Journal</h1>
         <button
           onClick={logOut}
