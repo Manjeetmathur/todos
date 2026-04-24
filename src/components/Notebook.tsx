@@ -32,6 +32,7 @@ export default function Notebook({ user }: NotebookProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reloadTrigger, setReloadTrigger] = useState(0);
+  const isInitialLoad = useRef(true);
 
   useEffect(() => {
     if (!user) return;
@@ -44,6 +45,7 @@ export default function Notebook({ user }: NotebookProps) {
     );
 
     console.log('Notebook listener started for user', user.uid);
+    isInitialLoad.current = true;
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedPages = snapshot.docs.map(doc => ({
         id: doc.id,
@@ -53,6 +55,11 @@ export default function Notebook({ user }: NotebookProps) {
       
       setPages(fetchedPages);
       setLoading(false);
+
+      if (isInitialLoad.current && fetchedPages.length > 0) {
+        setCurrentPageIndex(fetchedPages.length - 1);
+        isInitialLoad.current = false;
+      }
 
       // If no pages exist, create the first one
       if (fetchedPages.length === 0) {
